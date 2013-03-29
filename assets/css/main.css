@@ -1,0 +1,30 @@
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+
+.content{margin-top: 60px;}
+
+.sidebar-nav
+{
+    padding: 0;
+    border: none;
+
+}
+
+a.nounderline
+{
+    text-decoration: none;
+}
+
+.table td.center
+{
+    text-align: center;
+}
+
+.dropdown-menu
+{
+    max-height: 600px;
+    overflow-y: auto;
+}

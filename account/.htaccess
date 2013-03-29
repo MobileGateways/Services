@@ -1,0 +1,13 @@
+
+# Turn on URL rewriting
+RewriteEngine On
+
+# Installation directory
+RewriteBase /account/
+
+# Allow any files that exist to be displayed directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite Trail URIs
+RewriteRule .* index.php/$0 [L]
