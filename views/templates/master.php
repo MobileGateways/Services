@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html class="no-js">
 <head>
-    <?php
+  <?php
 
-    ?>
-    <meta charset="utf-8">
-    <title>Mobile Admin</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+  ?>
+  <meta charset="utf-8">
+  <title>Mobile Admin</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
 
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/bootstrap-responsive.min.css">
-    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/bootstrap-responsive.min.css">
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/css/datetimepicker.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
 
-    <script src="/assets/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  <script src="/assets/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  <script src="/assets/js/vendor/backbone-min.js"></script>
+  <script src="/assets/js/vendor/underscore-min.js"></script>
+  <script src="/assets/js/vendor/jquery-1.8.3.min.js"></script>
+
+  <script src="/assets/js/vendor/bootstrap.min.js"></script>
+  <script src="/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
+
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
@@ -75,13 +83,13 @@
 
   <div class="container-fluid content">
     <div class="row-fluid">
-      <div class="span3">
-        <?php require_once $_SERVER['DOCUMENT_ROOT'].'/views/templates/partials/section-menu.php' ?>
-      </div>
       <div class="span9">
         <?php $this->partial($childView, $this->getData())?>
       </div>
 
+      <div class="span3">
+        <?php require_once $_SERVER['DOCUMENT_ROOT'].'/views/templates/partials/section-menu.php' ?>
+      </div>
     </div>
 
   </div>
@@ -95,12 +103,13 @@
     <p>Copyright &copy; 2013 <strong>The Austin Conner Group</strong></p>
 </footer>
 
-<script src="/assets/js/vendor/jquery-1.8.3.min.js"></script>
-<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+
 <script>
     // enable tooltips
     $(".tip").tooltip();
 </script>
+
 
 </body>
 </html>
