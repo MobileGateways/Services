@@ -95,12 +95,12 @@ $app->get("/:id", function ($id) use ($app, $response) {
     // query events
     $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
     // package the data
-    $response['data'] = arrayMap($calendarData);
+    $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
-});
+})->conditions(array('id' => '[0-9]{1,}'));
 
 /**
  * Fetch Calendar - returns calendar for month
@@ -113,13 +113,13 @@ $app->get("/:id/:month", function ($id, $month) use ($app, $response) {
     // query events
     $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND MONTH(start_time) = ?', $id, $month)));
     // package the data
-    $response['data'] = arrayMap($calendarData);
+    $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
 
-});
+})->conditions(array('id' => '[0-9]{1,}'));
 
 /**
  * Fetch Calendar - returns calendar for date range
@@ -132,11 +132,11 @@ $app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use (
     // query events
     $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
     // package the data
-    $response['data'] = arrayMap($calendarData);
+    $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
-});
+})->conditions(array('id' => '[0-9]{1,}'));
 
 
 /**
@@ -144,7 +144,7 @@ $app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use (
  *
  *
  */
-$app->post("/add", function ($id) use ($app) {
+$app->post("/add", function () use ($app) {
 
     $calendarData = new Calendar();
 
@@ -154,40 +154,59 @@ $app->post("/add", function ($id) use ($app) {
 
 /* CALENDAR EVENTS */
 
+
 /**
- * Add Event to Calendar
+ * Get Calendar Event
+ *
+ * get: /calendar/event/{id}
+ *
+ */
+$app->get("/event/:id", function ($id) use ($app, $response) {
+
+    // query events
+    $calendarData = Events::find($id);
+    // package the data
+    $response['data'] = $calendarData->values_for(array('id','title','description','start_time','end_time'));
+    $response['count'] = 1;
+    // send the data
+    echo json_encode($response);
+
+});
+
+/**
+ * Add Event to Calendar (id)
  *
  *
  *
  */
-$app->post("/:id/add/event", function ($id) use ($app) {
+$app->post("/event/:id", function ($id) use ($app) {
 
-    $calendarData = new Calendar();
+    //$calendarData = new Calendar();
+    echo $app->request()->getBody();
+
+})->conditions(array('id' => '[0-9]{1,}'));
+
+/**
+ * Update Event to Calendar (id)
+ *
+ *
+ *
+ */
+$app->put("/event/:id", function ($id) use ($app) {
+
+    echo $app->request()->getBody();
+
 
 
 });
 
 /**
- * Update Event to Calendar
+ * Delete Event to Calendar (id)
  *
  *
  *
  */
-$app->post("/:id/update/event", function ($id) use ($app) {
-
-    $calendarData = new Calendar();
-
-
-
-});
-
-/**
- * Delete Event to Calendar
- *
- *
- *
- */
-$app->post("/:id/delete/event", function ($id) use ($app) {
+$app->delete("/event/:id", function ($id) use ($app) {
 
     $calendarData = new Calendar();
 
@@ -213,7 +232,7 @@ $app->run();
  *
  *
  */
- function arrayMap($events){
+ function arrayMapEvent($events){
 
     return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'description\',\'start_time\',\'end_time\'));'),$events);
 

@@ -16,12 +16,13 @@
   <link rel="stylesheet" href="/assets/css/main.css">
 
   <script src="/assets/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-  <script src="/assets/js/vendor/backbone-min.js"></script>
-  <script src="/assets/js/vendor/underscore-min.js"></script>
   <script src="/assets/js/vendor/jquery-1.8.3.min.js"></script>
+  <script src="/assets/js/vendor/underscore-min.js"></script>
+  <script src="/assets/js/vendor/backbone-min.js"></script>
 
   <script src="/assets/js/vendor/bootstrap.min.js"></script>
   <script src="/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
+ <script src="/assets/js/vendor/moment.min.js"></script>
 
 </head>
 <body>
