@@ -144,13 +144,13 @@ $app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use (
  *
  *
  */
-$app->post("/add", function () use ($app) {
-
-    $calendarData = new Calendar();
-
-
-
-});
+//$app->post("/add", function () use ($app) {
+//
+//    $calendarData = new Calendar();
+//
+//
+//
+//});
 
 /* CALENDAR EVENTS */
 
@@ -179,10 +179,23 @@ $app->get("/event/:id", function ($id) use ($app, $response) {
  *
  *
  */
-$app->post("/event/:id", function ($id) use ($app) {
+$app->post("/event/:id", function ($id) use ($app, $response) {
 
-    //$calendarData = new Calendar();
-    echo $app->request()->getBody();
+    $request = json_decode($app->request()->getBody());
+
+    // create the event
+    $event = new Events();
+    $event->title = $request->title;
+    $event->description = $request->description;
+    $event->start_time = $request->start_time->date;
+    $event->end_time = $request->end_time->date;
+    $event->calendar_id = $request->calendar_id;
+    $event->save();
+    // package the data
+    $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));
+    $response['message'] = "saved";
+    // confirm
+    echo json_encode($response);
 
 })->conditions(array('id' => '[0-9]{1,}'));
 

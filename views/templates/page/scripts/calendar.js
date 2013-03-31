@@ -34,10 +34,10 @@ window.Event = Backbone.Model.extend({
     defaults:{
     "id":null,
     "title":"",
+    "description":"",
     "start_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
     "end_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "description":"",
-    "calendar_id":0
+    "calendar_id":calId
     }
 });
 
@@ -136,10 +136,12 @@ window.EventView = Backbone.View.extend({
   },
   saveEvent:function () {
     this.model.set({
-        title:$('#eventTitle').val(),
-        description:$('#eventDescription').val(),
+        title: $('#eventTitle').val(),
+        description: $('#eventDescription').val(),
         start_time: {date: $('#startDate input').val()+' '+$('#startTime input').val(),timezone_type:2,timezone:timeZone},// $('#eventTitle').val(),
-        end_time: {date: $('#startDate input').val()+' '+$('#endTime input').val(),timezone_type:2,timezone:timeZone} //$('#eventTitle').val()
+        end_time: {date: moment($('#startDate input').val()+' '+$('#endTime input').val()),timezone_type:2,timezone:timeZone}, //$('#eventTitle').val()
+        calendar_id: calId
+
     });
     if (this.model.isNew()) {
         var self = this;
