@@ -25,6 +25,10 @@
  * @filesource
  */
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: *");
+
 require_once $_SERVER['DOCUMENT_ROOT'].'system/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
@@ -152,7 +156,7 @@ $app->post("/news/:id", function ($id) use ($app, $response) {
     $request = json_decode($app->request()->getBody());
 
     // Validate feed id
-    if($id == $request->news_id){
+    if($id == $request->feed_id){
 
         // create the post
         $event = new News();
@@ -186,7 +190,7 @@ $app->put("/news/:id", function ($id) use ($app) {
     $request = json_decode($app->request()->getBody());
 
     // Validate news id
-    if($id == $request->news_id){
+    if($id == $request->feed_id){
 
         // find the news
         $event = News::find($request->id); // TODO: Need Validation Here

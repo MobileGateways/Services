@@ -24,6 +24,9 @@
  * @since		Version 1.0
  * @filesource
  */
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: *");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'system/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();

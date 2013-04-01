@@ -150,12 +150,12 @@ window.NewsView = Backbone.View.extend({
   savePost:function () {
     this.model.set({
         title: $('#postTitle').val(),
-        description: $('#postContent').val(),
+        content: $('#postContent').val(),
         post_date: {date: $('#postDate input').val(),timezone_type:2,timezone:timeZone}
     });
     if (this.model.isNew()) {
         var self = this;
-        router.eventList.create(this.model, {
+        router.feedList.create(this.model, {
             success:function () {
                 router.navigate('/', {trigger: true});
             }
@@ -168,9 +168,8 @@ window.NewsView = Backbone.View.extend({
     return false;
   },
   render: function(){
-
+	// build content
     var template = _.template($("#postForm").html(), this.model.toJSON());
-    console.log(this.el);
     $(this.el).html(template);
     // initilize date/time controls
     $('.form_date').datetimepicker({
@@ -255,4 +254,3 @@ _.templateSettings = {
 };
 var router = new window.Routes();
 Backbone.history.start({pushstate:false});
-
