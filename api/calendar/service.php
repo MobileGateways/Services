@@ -108,13 +108,13 @@ $app->get("/:id", function ($id) use ($app, $response) {
 /**
  * Fetch Calendar - returns calendar for month
  *
- * /calendar/{id}/{month}
+ * /calendar/{id}/{month}-{year}
  *
  */
-$app->get("/:id/:month", function ($id, $month) use ($app, $response) {
+$app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND MONTH(start_time) = ?', $id, $month)));
+    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND MONTH(start_time) = ? AND YEAR(start_time) = ?', $id, $month, $year)));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);

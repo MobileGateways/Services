@@ -44,15 +44,18 @@ window.Feeds = Backbone.Collection.extend({
     model:News,
     id:0,   // feed id
     mo:0,   // news month
+    yr:0,   // calendar year
 
     initialize: function(options) {
         options || (options = {});
         this.id = options.id;
+        this.yr = options.yr;
         this.mo = options.mo;
     },
     fetchMonth: function(options) {
         options || (options = {});
         this.id = options.id;
+        this.yr = options.yr;
         this.mo = options.mo;
         this.fetch();
     },
@@ -61,7 +64,7 @@ window.Feeds = Backbone.Collection.extend({
         // /feeds/{id}
         var uri = ''+ this.id;
         // /feeds/{id}/{month}
-        uri = uri + (this.mo > 0 ? '/'+this.mo:'');
+        uri = uri + (this.mo > 0 ? '/'+this.mo:'')+(this.yr > 0 ? '-'+this.yr:'2013');
         // build new uri
 
         console.log(uri);
@@ -103,13 +106,21 @@ window.FeedView = Backbone.View.extend({
   },
 
   prevMo: function(){
-    console.log(--curMonth)
-    this.collection.fetchMonth({id: feedId, mo: curMonth});
+
+    if(--curMonth < 1){
+        curMonth = 12;
+        --curYear;
+    }
+
+    this.collection.fetchMonth({id: feedId, mo: curMonth, yr: curYear});
   },
 
   nextMo: function(){
-    console.log(++curMonth)
-    this.collection.fetchMonth({id: feedId, mo: curMonth});
+    if(++curMonth > 12){
+        curMonth = 1;
+        ++curYear;
+    }
+    this.collection.fetchMonth({id: feedId, mo: curMonth, yr: curYear});
   },
 
   /**
@@ -215,7 +226,7 @@ window.Routes = Backbone.Router.extend({
      */
     index: function(){
 
-        this.feedList = new window.Feeds({id: feedId, mo: curMonth});
+        this.feedList = new window.Feeds({id: feedId, mo: curMonth, yr: curYear});
         new window.FeedView({collection: this.feedList});
     },
     /*
@@ -223,7 +234,7 @@ window.Routes = Backbone.Router.extend({
      */
     add: function(){
 
-         new window.NewsView({model: new window.News(), month: curMonth}).render();
+         new window.NewsView({model: new window.News(), month: curMonth, yr: curYear}).render();
 
     },
     /*

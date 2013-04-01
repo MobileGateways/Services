@@ -100,6 +100,7 @@
 	var feedId = <?php echo $account['feed_id'] ?>;
 	var timeZone = "PDT";
 	var curMonth = 3;
+	var curYear = 2013;
 </script>
 
 <script type="text/javascript" src="/views/templates/page/scripts/posts.js"></script>

@@ -107,13 +107,12 @@ $app->get("/:id", function ($id) use ($app, $response) {
 /**
  * Fetch News - returns news for month
  *
- * get: /feeds/{id}/{month}
+ * get: /feeds/{id}/{month}-{year}
  *
  */
-$app->get("/:id/:month", function ($id, $month) use ($app, $response) {
-
+$app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
     // query news
-    $newsData = News::find('all', array('conditions' => array('feed_id = ? AND MONTH(post_date) = ?', $id, $month)));
+    $newsData = News::find('all', array('conditions' => array('feed_id = ? AND MONTH(post_date) = ? AND YEAR(post_date) = ?', $id, $month, $year)));
     // package the data
     $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);
@@ -239,8 +238,6 @@ $app->run();
 
 /**
  * Data conversion utilites for news events
- *
- *
  *
  *
  *

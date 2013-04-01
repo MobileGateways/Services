@@ -24,12 +24,12 @@
  * @since		Version 1.0
  * @filesource
  */
-session_start();
+
 require_once $_SERVER['DOCUMENT_ROOT'].'system/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim(array('session.handler' => null, 'templates.path'=>$_SERVER['DOCUMENT_ROOT'].'views/templates/'));
-//$app->add(new \Slim\Middleware\SessionCookie());
+$app->add(new \Slim\Middleware\SessionCookie());
 
 $authenticate = function ($app) {
     return function () use ($app) {
@@ -41,16 +41,9 @@ $authenticate = function ($app) {
     };
 };
 
+
 require $_SERVER['DOCUMENT_ROOT'].'views/AccountView.php';
 $app->view(new AccountView());
-
-$app->hook('slim.before.dispatch', function() use ($app) {
-   $user = null;
-   if (isset($_SESSION['user'])) {
-      $user = $_SESSION['user'];
-   }
-   $app->view()->appendData(array('user', $user));
-});
 
 /**
  * Settings Page - Dashboard
