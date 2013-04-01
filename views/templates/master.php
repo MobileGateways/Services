@@ -49,7 +49,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/calendar">Calendar</a></li>
                                 <li><a href="/posts">News Feeds</a></li>
-                                <li><a href="/ads">Ads Feeds</a></li>
+                                <li><a href="/ads">Coupon Feeds</a></li>
                             </ul>
                         </li>
 

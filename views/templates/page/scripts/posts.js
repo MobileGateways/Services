@@ -29,24 +29,22 @@
  *
  *
  */
-window.Event = Backbone.Model.extend({
-    url: '/api/calendar/event/'+calId,
+window.News = Backbone.Model.extend({
+    url: '/api/feeds/news/'+feedId,
     defaults:{
     "id":null,
     "title":"",
-    "description":"",
-    "start_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "end_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "calendar_id":calId
+    "content":"",
+    "post_date":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
+    "feed_id":feedId
     }
 });
 
-window.Calendar = Backbone.Collection.extend({
-    model:Event,
-    id:0,   // calendar id
-    mo:0,   // calendar month
-    startDate: '',
-    endDate: '',
+window.Feeds = Backbone.Collection.extend({
+    model:News,
+    id:0,   // feed id
+    mo:0,   // news month
+
     initialize: function(options) {
         options || (options = {});
         this.id = options.id;
@@ -60,30 +58,28 @@ window.Calendar = Backbone.Collection.extend({
     },
     // override fetch url for addtional uri elements
     url:function() {
-        // /calendar/{id}
+        // /feeds/{id}
         var uri = ''+ this.id;
-        // /calendar/{id}/{month}
+        // /feeds/{id}/{month}
         uri = uri + (this.mo > 0 ? '/'+this.mo:'');
         // build new uri
 
         console.log(uri);
-        return "/api/calendar/"+uri;
+        return "/api/feeds/"+uri;
     },
-
     parse:function(response){
         //console.log(response);
         return response.data;
     }
 });
 
-
 /**
  * Views
  *
  *
  */
-window.CalendarView = Backbone.View.extend({
-  el: '#eventContext',
+window.FeedView = Backbone.View.extend({
+  el: '#feedsContext',
   collection: null,
   initialize: function(options){
     _.bind(this, 'render');
@@ -93,27 +89,27 @@ window.CalendarView = Backbone.View.extend({
   },
 
   events:{
-    "click .event":"detail",
+    "click .feed":"detail",
     "click #prevMo":"prevMo",
     "click #nextMo":"nextMo"
   },
 
   render: function(){
-    var params = { events: this.collection.models };
-    console.log('CalendarView Rendered');
-    var template = _.template($("#events").html(), params);
+    var params = { posts: this.collection.models };
+
+    var template = _.template($("#feeds").html(), params);
     $(this.el).html(template);
     return this;
   },
 
   prevMo: function(){
     console.log(--curMonth)
-    this.collection.fetchMonth({id: calId, mo: curMonth});
+    this.collection.fetchMonth({id: feedId, mo: curMonth});
   },
 
   nextMo: function(){
     console.log(++curMonth)
-    this.collection.fetchMonth({id: calId, mo: curMonth});
+    this.collection.fetchMonth({id: feedId, mo: curMonth});
   },
 
   /**
@@ -126,42 +122,36 @@ window.CalendarView = Backbone.View.extend({
     var target = e.target;
     model = this.collection.get(target.id);
 
-    var template = _.template($("#eventDetail").html(), model.toJSON());
+    var template = _.template($("#postDetail").html(), model.toJSON());
     $('#dialog').html(template).modal();
     return this;
   }
 
-
 });
 
-window.EventView = Backbone.View.extend({
-  el: '#eventContext',
+window.NewsView = Backbone.View.extend({
+  el: '#feedsContext',
   model: null,
   initialize: function(options){
     _.bind(this, 'render');
     this.listenTo(this.model, 'change', this.render);
 
   },
-
   events:{
     "change input":"change",
-    "click #submit":"saveEvent",
+    "click #submit":"savePost",
     "click #close":"cancel"
   },
-
   change:function (event) {
       var target = event.target;
       console.log('changing ' + target.id + ' from: ' + target.defaultValue + ' to: ' + target.value);
 
   },
-  saveEvent:function () {
+  savePost:function () {
     this.model.set({
-        title: $('#eventTitle').val(),
-        description: $('#eventDescription').val(),
-        start_time: {date: $('#startDate input').val()+' '+$('#startTime input').val(),timezone_type:2,timezone:timeZone},// $('#eventTitle').val(),
-        end_time: {date: moment($('#startDate input').val()+' '+$('#endTime input').val()),timezone_type:2,timezone:timeZone}, //$('#eventTitle').val()
-        calendar_id: calId
-
+        title: $('#postTitle').val(),
+        description: $('#postContent').val(),
+        post_date: {date: $('#postDate input').val(),timezone_type:2,timezone:timeZone}
     });
     if (this.model.isNew()) {
         var self = this;
@@ -178,7 +168,9 @@ window.EventView = Backbone.View.extend({
     return false;
   },
   render: function(){
-    var template = _.template($("#eventForm").html(), this.model.toJSON());
+
+    var template = _.template($("#postForm").html(), this.model.toJSON());
+    console.log(this.el);
     $(this.el).html(template);
     // initilize date/time controls
     $('.form_date').datetimepicker({
@@ -191,21 +183,8 @@ window.EventView = Backbone.View.extend({
        minView: 2,
        forceParse: 0
     });
-    $('.form_time').datetimepicker({
-       //initalDate:  '',
-       weekStart: 1,
-       todayBtn:  1,
-       autoclose: 1,
-       todayHighlight: 0,
-       startView: 1,
-       minView: 0,
-       maxView: 1,
-       forceParse: 0,
-       showMeridian: 1
-    });
     return this;
   },
-
   cancel:function () {
     this.close();
     window.history.back();
@@ -217,9 +196,7 @@ window.EventView = Backbone.View.extend({
     $(this.el).empty();
   }
 
-
 });
-
 
 /**
  * Routes
@@ -230,36 +207,32 @@ window.Routes = Backbone.Router.extend({
 
 	routes: {
         "" : "index",                       // initial view
-        "event/add" : "add",
-        "event/remove/:id" : "remove",
-		"event/edit/:id" : "edit"
+        "post/add" : "add",
+        "post/remove/:id" : "remove",
+		"post/edit/:id" : "edit"
 	},
-
     /*
      * Display Current Month's Events
      */
     index: function(){
 
-        this.eventList = new window.Calendar({id: calId, mo: curMonth});
-        new window.CalendarView({collection: this.eventList});
-
+        this.feedList = new window.Feeds({id: feedId, mo: curMonth});
+        new window.FeedView({collection: this.feedList});
     },
-
-
     /*
      * Add Event
      */
     add: function(){
 
-         new window.EventView({model: new window.Event(), month: curMonth}).render();
+         new window.NewsView({model: new window.News(), month: curMonth}).render();
 
     },
     /*
      * Edit Events
      */
     edit: function(id){
-        var event = this.eventList.get(id);
-        new window.EventView({model:event}).render();
+        var post = this.feedList.get(id);
+        new window.NewsView({model:post}).render();
     },
     /*
      * Remove Events
@@ -275,16 +248,11 @@ window.Routes = Backbone.Router.extend({
  * Start App
  *
  */
-    // template pattern (Mustache {{ name }})
-    _.templateSettings = {
-        interpolate: /\{\{\=(.+?)\}\}/g,
-        evaluate: /\{\{(.+?)\}\}/g
-    };
-    var router = new window.Routes();
-    Backbone.history.start({pushstate:false});
+// template pattern (Mustache {{ name }})
+_.templateSettings = {
+    interpolate: /\{\{\=(.+?)\}\}/g,
+    evaluate: /\{\{(.+?)\}\}/g
+};
+var router = new window.Routes();
+Backbone.history.start({pushstate:false});
 
-/**
- * Utilities
- *
- *
- */

@@ -3,11 +3,11 @@
 	<script id="events" type="text/template">
 
 			<div class="span12">
+			<div><span class="pull-left"><a id="prevMo"href="#">Prev</a></span><span class="pull-right"><a id="nextMo" href="#">Next</a></span></div>
 				<table class="table">
 				<thead>
 				  <tr>
 					<th colspan="5"><h3>Calendar of Events</h3></th>
-
 				  </tr>
 				  <tr>
 					<th>Title</th>
@@ -119,8 +119,10 @@
 
 
 <script type="text/javascript">
+	// Set globals
 	var calId = 1;
 	var timeZone = "PDT";
+	var curMonth = 3;
 </script>
 
 <script type="text/javascript" src="/views/templates/page/scripts/calendar.js"></script>

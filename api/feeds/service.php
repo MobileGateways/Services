@@ -68,34 +68,32 @@ $response = array('status'=>'ok', 'message'=>'', 'count'=>0, 'data'=>array());
 /**
  * Status Page
  *
- * /calendar/
+ * get: /feeds/
  *
  */
 $app->get('/', function () use($app, $response)  {
 
-    $response['message'] = 'Mobile Gateways Events Services v1.0';
+    $response['message'] = 'Mobile Gateways News Services v1.0';
     echo json_encode($response);
 
 });
 
 
 /**
- * Fetch Calendar - returns calendar for next 30 days
+ * Fetch News - returns recent news (past 30 days max??)
  *
- * /calendar/{id}
+ * get: /feeds/{id}
  *
  */
 $app->get("/:id", function ($id) use ($app, $response) {
 
     // get date
-    $nextDate = new DateTime('GMT');
     $today = new DateTime('GMT');
-    $nextDate->add(new DateInterval('P1M'));
 
-    // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
+    // query news
+    $newsData = News::find('all', array('conditions' => array('feed_id = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
-    $response['data'] = arrayMapEvent($calendarData);
+    $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
@@ -103,70 +101,40 @@ $app->get("/:id", function ($id) use ($app, $response) {
 })->conditions(array('id' => '[0-9]{1,}'));
 
 /**
- * Fetch Calendar - returns calendar for month
+ * Fetch News - returns news for month
  *
- * /calendar/{id}/{month}
+ * get: /feeds/{id}/{month}
  *
  */
 $app->get("/:id/:month", function ($id, $month) use ($app, $response) {
 
-    // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND MONTH(start_time) = ?', $id, $month)));
+    // query news
+    $newsData = News::find('all', array('conditions' => array('feed_id = ? AND MONTH(post_date) = ?', $id, $month)));
     // package the data
-    $response['data'] = arrayMapEvent($calendarData);
+    $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
-
-})->conditions(array('id' => '[0-9]{1,}'));
-
-/**
- * Fetch Calendar - returns calendar for date range
- *
- * /calendar/{id}/{startDate}/{endDate}
- *
- */
-$app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use ($app, $response) {
-
-    // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
-    // package the data
-    $response['data'] = arrayMapEvent($calendarData);
-    $response['count'] = count($response['data']);
-    // send the data
-    echo json_encode($response);
 })->conditions(array('id' => '[0-9]{1,}'));
 
 
-/**
- * Add New Calendar
- *
- *
- */
-//$app->post("/add", function () use ($app) {
-//
-//    $calendarData = new Calendar();
-//
-//
-//
-//});
 
-/* CALENDAR EVENTS */
+/* NEWS FEEDS */
 
 
 /**
- * Get Calendar Event
+ * Get News Event
  *
- * get: /calendar/event/{id}
+ * get: /feeds/news/{id}
  *
  */
-$app->get("/event/:id", function ($id) use ($app, $response) {
+$app->get("/news/:id", function ($id) use ($app, $response) {
 
-    // query events
-    $calendarData = Events::find($id);
+    // query news
+    $newsData = News::find($id);
     // package the data
-    $response['data'] = $calendarData->values_for(array('id','title','description','start_time','end_time'));
+    $response['data'] = $newsData->values_for(array('id','title','content','post_date'));
     $response['count'] = 1;
     // send the data
     echo json_encode($response);
@@ -174,29 +142,28 @@ $app->get("/event/:id", function ($id) use ($app, $response) {
 });
 
 /**
- * Add Event to Calendar (id)
+ * Add News to Feed (id)
  *
- *
+ * post: /feeds/news/{id}
  *
  */
-$app->post("/event/:id", function ($id) use ($app, $response) {
+$app->post("/news/:id", function ($id) use ($app, $response) {
 
     $request = json_decode($app->request()->getBody());
 
-    // Validate calendar id
-    if($id == $request->calendar_id){
+    // Validate feed id
+    if($id == $request->news_id){
 
-        // create the event
-        $event = new Events();
+        // create the post
+        $event = new News();
         $event->title = $request->title;
-        $event->description = $request->description;
-        $event->start_time = $request->start_time->date;
-        $event->end_time = $request->end_time->date;
-        $event->calendar_id = $request->calendar_id;
+        $event->content = $request->content;
+        $event->post_date = $request->post_date->date;
+        $event->feed_id = $request->feed_id;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));
-        $response['message'] = "event saved";
+        $response['data'] = $event->values_for(array('id','title','content','post_date'));
+        $response['message'] = "post saved";
     }
     else{
         $response['status'] = "error";
@@ -209,31 +176,29 @@ $app->post("/event/:id", function ($id) use ($app, $response) {
 })->conditions(array('id' => '[0-9]{1,}'));
 
 /**
- * Update Event to Calendar (id)
+ * Update News to Feeds (id)
  *
- *
+ * put: /feeds/news/{id}
  *
  */
-$app->put("/event/:id", function ($id) use ($app) {
+$app->put("/news/:id", function ($id) use ($app) {
 
     $request = json_decode($app->request()->getBody());
 
-    // Validate calendar id
-    if($id == $request->calendar_id){
+    // Validate news id
+    if($id == $request->news_id){
 
-        // find the event
-        $event = Events::find($request->id);
-        // Need Validation Here
+        // find the news
+        $event = News::find($request->id); // TODO: Need Validation Here
         // Update and Save Values
         $event->title = $request->title;
-        $event->description = $request->description;
-        $event->start_time = $request->start_time->date;
-        $event->end_time = $request->end_time->date;
-        $event->calendar_id = $request->calendar_id;
+        $event->content = $request->content;
+        $event->post_date = $request->post_date->date;
+        $event->feed_id = $request->feed_id;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));
-        $response['message'] = "event saved";
+        $response['data'] = $event->values_for(array('id','title','content','post_date'));
+        $response['message'] = "post saved";
     }
     else{
         $response['status'] = "error";
@@ -248,12 +213,12 @@ $app->put("/event/:id", function ($id) use ($app) {
 });
 
 /**
- * Delete Event to Calendar (id)
+ * Delete News from Feeds (id)
  *
- *
+ * delete: /feeds/news/{id}
  *
  */
-$app->delete("/event/:id", function ($id) use ($app) {
+$app->delete("/news/:id", function ($id) use ($app) {
 
 
 });
@@ -269,15 +234,15 @@ $app->run();
 
 
 /**
- * Data conversion utilites for calendar events
+ * Data conversion utilites for news events
  *
  *
  *
  *
  *
  */
- function arrayMapEvent($events){
+ function arrayMapPost($events){
 
-    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'description\',\'start_time\',\'end_time\'));'),$events);
+    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'content\',\'post_date\'));'),$events);
 
  }
