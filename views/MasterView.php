@@ -25,6 +25,8 @@
  * @filesource
  */
 
+header('X-Powered-By: Mobile Gateways');
+
 require $_SERVER['DOCUMENT_ROOT'].'/system/ActiveRecord.php';
 ActiveRecord\Config::initialize(function($cfg) {
     $cfg->set_model_directory($_SERVER['DOCUMENT_ROOT'].'/models');
@@ -41,7 +43,10 @@ class MasterView extends \Slim\View
 
     public function __construct()
     {
-
+        // Grab User Account info....
+        $accountData = Account::find('first',array('conditions'=>array('user_id = ?', $this->userId())));
+        // grab only what we need
+         $this->setData('account', $accountData->values_for(array('id','name','calendar_id','feed_id','isactive')));
     }
 
     /** Render Page

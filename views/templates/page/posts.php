@@ -1,3 +1,6 @@
+<?php
+	$account = $this->getData('account');
+?>
 <div class="container-fluid">
 	<div id="feedsContext" class="row-fluid well">	</div>
 </div>
@@ -94,7 +97,7 @@
 
 <script type="text/javascript">
 	// Set globals
-	var feedId = 1;
+	var feedId = <?php echo $account['feed_id'] ?>;
 	var timeZone = "PDT";
 	var curMonth = 3;
 </script>

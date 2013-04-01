@@ -30,7 +30,7 @@
  *
  */
 class Account extends ActiveRecord\Model {
-  static $table_name = 'calendar';
-
+  static $table_name = 'accounts';
+  static $belongs_to = array(array('user', 'class_name'=>'User'));
 
 }
