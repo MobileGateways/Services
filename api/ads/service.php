@@ -95,7 +95,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $today = new DateTime('GMT');
 
     // query copy
-    $copyData = Ads::find('all', array('conditions' => array('feed_id = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
+    $copyData = Ads::find('all', array('conditions' => array('channel_id = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapPost($copyData);
     $response['count'] = count($response['data']);
@@ -113,7 +113,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
 $app->get("/:id/:month", function ($id, $month) use ($app, $response) {
 
     // query ads
-    $copyData = Ads::find('all', array('conditions' => array('feed_id = ? AND MONTH(post_date) = ?', $id, $month)));
+    $copyData = Ads::find('all', array('conditions' => array('channel_id = ? AND MONTH(post_date) = ?', $id, $month)));
     // package the data
     $response['data'] = arrayMapPost($copyData);
     $response['count'] = count($response['data']);
@@ -138,7 +138,7 @@ $app->get("/copy/:id", function ($id) use ($app, $response) {
     // query copy
     $copyData = Ads::find($id);
     // package the data
-    $response['data'] = $copyData->values_for(array('id','title','content','post_date'));
+    $response['data'] = $copyData->values_for(array('id','title','content','post_date','expire_date'));
     $response['count'] = 1;
     // send the data
     echo json_encode($response);
@@ -156,17 +156,17 @@ $app->post("/copy/:id", function ($id) use ($app, $response) {
     $request = json_decode($app->request()->getBody());
 
     // Validate feed id
-    if($id == $request->feed_id){
+    if($id == $request->channel_id){
 
         // create the post
         $event = new Ads();
         $event->title = $request->title;
         $event->content = $request->content;
         $event->post_date = $request->post_date->date;
-        $event->feed_id = $request->feed_id;
+        $event->channel_id = $request->channel_id;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','content','post_date'));
+        $response['data'] = $event->values_for(array('id','title','content','post_date','expire_date'));
         $response['message'] = "post saved";
     }
     else{
@@ -190,7 +190,7 @@ $app->put("/copy/:id", function ($id) use ($app) {
     $request = json_decode($app->request()->getBody());
 
     // Validate copy id
-    if($id == $request->feed_id){
+    if($id == $request->channel_id){
 
         // find the copy
         $event = Ads::find($request->id); // TODO: Need Validation Here
@@ -198,10 +198,10 @@ $app->put("/copy/:id", function ($id) use ($app) {
         $event->title = $request->title;
         $event->content = $request->content;
         $event->post_date = $request->post_date->date;
-        $event->feed_id = $request->feed_id;
+        $event->channel_id = $request->channel_id;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','content','post_date'));
+        $response['data'] = $event->values_for(array('id','title','content','post_date','expire_date'));
         $response['message'] = "post saved";
     }
     else{
@@ -217,7 +217,7 @@ $app->put("/copy/:id", function ($id) use ($app) {
 });
 
 /**
- * Delete Ads from Feeds (id)
+ * Delete Ad from Feeds (id)
  *
  * delete: /ads/copy/{id}
  *
@@ -241,12 +241,9 @@ $app->run();
  * Data conversion utilites for copy events
  *
  *
- *
- *
- *
  */
  function arrayMapPost($events){
 
-    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'content\',\'post_date\'));'),$events);
+    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'content\',\'post_date\',\'expire_date\'));'),$events);
 
  }
