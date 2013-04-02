@@ -122,7 +122,7 @@
 
 <script type="text/javascript">
 	// Set globals
-	var calId = <?php echo $account['calendar_id'] ?>;
+	var calId = "<?php echo $account['calendar_id'] ?>";
 	var timeZone = "PDT";
 	var curMonth = 3;
 	var curYear = 2013;

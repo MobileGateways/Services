@@ -37,7 +37,7 @@ window.Event = Backbone.Model.extend({
     "description":"",
     "start_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
     "end_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "calendar_id":calId
+    "account":calId
     }
 });
 
@@ -171,7 +171,7 @@ window.EventView = Backbone.View.extend({
         description: $('#eventDescription').val(),
         start_time: {date: $('#startDate input').val()+' '+$('#startTime input').val(),timezone_type:2,timezone:timeZone},// $('#eventTitle').val(),
         end_time: {date: moment($('#startDate input').val()+' '+$('#endTime input').val()),timezone_type:2,timezone:timeZone}, //$('#eventTitle').val()
-        calendar_id: calId
+        account: calId
 
     });
     if (this.model.isNew()) {

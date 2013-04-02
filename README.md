@@ -1,12 +1,23 @@
-Services
-========
+# Mobile Gateways Services
 
-Backend Services for Mobile Gateways
 
-Calendar Services – RSS Feed of Events
+## Libraries (dependencies)
+ -- Moment http://momentjs.com/
+ -- Backbone http://backbonejs.org/
+ -- Underscore http://underscorejs.org/
+ -- JQuery http://jquery.com/
+ -- Slim Framework http://www.slimframework.com/
+ -- Bootstrap DateTimePicker http://www.malot.fr/bootstrap-datetimepicker/index.php
 
-Endpoint: http://services.example.com/calendar
+## Features
 
-Pattern: /calendar/{cId}/?{params}
 
-Returns: calendar json
+
+## Advantages
+
+
+
+
+## License
+Copyright (c) 2013 The Austin Conner Group
+Licensed under the [Open Software License version 3.0](license "OSL-3.0").

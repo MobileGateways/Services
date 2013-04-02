@@ -65,6 +65,39 @@ $app->get('/', $authenticate($app), function () use($app) {
 
 });
 
+/**
+ * Settings Page - Dashboard
+ *
+ *
+ *
+ */
+$app->get('/account/settings', $authenticate($app), function () use($app) {
+    require $_SERVER['DOCUMENT_ROOT'].'views/AccountView.php';
+    $app->view(new AccountView());
+    // Page Meta
+    $meta = array();
+    $data = array('meta'=>$meta);
+    $app->render('page/account/settings.php', $data);
+
+
+});
+
+/**
+ * Billing Page - Dashboard
+ *
+ *
+ *
+ */
+$app->get('/account/billing', $authenticate($app), function () use($app) {
+    require $_SERVER['DOCUMENT_ROOT'].'views/AccountView.php';
+    $app->view(new AccountView());
+    // Page Meta
+    $meta = array();
+    $data = array('meta'=>$meta);
+    $app->render('page/account/billing.php', $data);
+
+
+});
 
 /**
  * Calendar Admin

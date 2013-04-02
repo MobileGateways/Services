@@ -96,14 +96,14 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $nextDate->add(new DateInterval('P1M'));
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
+    $calendarData = Events::find('all', array('conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
  * Fetch Calendar - returns calendar for month
@@ -114,7 +114,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
 $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND MONTH(start_time) = ? AND YEAR(start_time) = ?', $id, $month, $year)));
+    $calendarData = Events::find('all', array('conditions' => array('account = ? AND MONTH(start_time) = ? AND YEAR(start_time) = ?', $id, $month, $year)));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
@@ -122,7 +122,7 @@ $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $respons
     echo json_encode($response);
 
 
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
  * Fetch Calendar - returns calendar for date range
@@ -133,13 +133,13 @@ $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $respons
 $app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use ($app, $response) {
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('calendar_id = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
+    $calendarData = Events::find('all', array('conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 
 /**
@@ -187,7 +187,7 @@ $app->post("/event/:id", function ($id) use ($app, $response) {
     $request = json_decode($app->request()->getBody());
 
     // Validate calendar id
-    if($id == $request->calendar_id){
+    if($id == $request->account){
 
         // create the event
         $event = new Events();
@@ -195,7 +195,7 @@ $app->post("/event/:id", function ($id) use ($app, $response) {
         $event->description = $request->description;
         $event->start_time = $request->start_time->date;
         $event->end_time = $request->end_time->date;
-        $event->calendar_id = $request->calendar_id;
+        $event->account = $request->account;
         $event->save();
         // package the data
         $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));
@@ -209,7 +209,7 @@ $app->post("/event/:id", function ($id) use ($app, $response) {
     // confirmation
     echo json_encode($response);
 
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
  * Update Event to Calendar (id)
@@ -222,7 +222,7 @@ $app->put("/event/:id", function ($id) use ($app) {
     $request = json_decode($app->request()->getBody());
 
     // Validate calendar id
-    if($id == $request->calendar_id){
+    if($id == $request->account){
 
         // find the event
         $event = Events::find($request->id);
@@ -232,7 +232,7 @@ $app->put("/event/:id", function ($id) use ($app) {
         $event->description = $request->description;
         $event->start_time = $request->start_time->date;
         $event->end_time = $request->end_time->date;
-        $event->calendar_id = $request->calendar_id;
+        $event->account = $request->account;
         $event->save();
         // package the data
         $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));

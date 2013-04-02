@@ -97,7 +97,7 @@
 
 <script type="text/javascript">
 	// Set globals
-	var feedId = <?php echo $account['feed_id'] ?>;
+	var feedId = "<?php echo $account['feed_id'] ?>";
 	var timeZone = "PDT";
 	var curMonth = 3;
 	var curYear = 2013;

@@ -36,7 +36,7 @@ window.News = Backbone.Model.extend({
     "title":"",
     "content":"",
     "post_date":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "feed_id":feedId
+    "account":feedId
     }
 });
 

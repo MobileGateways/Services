@@ -95,14 +95,14 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $today = new DateTime('GMT');
 
     // query news
-    $newsData = News::find('all', array('conditions' => array('feed_id = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
+    $newsData = News::find('all', array('conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
  * Fetch News - returns news for month
@@ -112,14 +112,14 @@ $app->get("/:id", function ($id) use ($app, $response) {
  */
 $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
     // query news
-    $newsData = News::find('all', array('conditions' => array('feed_id = ? AND MONTH(post_date) = ? AND YEAR(post_date) = ?', $id, $month, $year)));
+    $newsData = News::find('all', array('conditions' => array('account = ? AND MONTH(post_date) = ? AND YEAR(post_date) = ?', $id, $month, $year)));
     // package the data
     $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 
 
@@ -155,14 +155,14 @@ $app->post("/news/:id", function ($id) use ($app, $response) {
     $request = json_decode($app->request()->getBody());
 
     // Validate feed id
-    if($id == $request->feed_id){
+    if($id == $request->account){
 
         // create the post
         $event = new News();
         $event->title = $request->title;
         $event->content = $request->content;
         $event->post_date = $request->post_date->date;
-        $event->feed_id = $request->feed_id;
+        $event->account = $request->account;
         $event->save();
         // package the data
         $response['data'] = $event->values_for(array('id','title','content','post_date'));
@@ -176,7 +176,7 @@ $app->post("/news/:id", function ($id) use ($app, $response) {
     // confirmation
     echo json_encode($response);
 
-})->conditions(array('id' => '[0-9]{1,}'));
+})->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
  * Update News to Feeds (id)
@@ -189,7 +189,7 @@ $app->put("/news/:id", function ($id) use ($app) {
     $request = json_decode($app->request()->getBody());
 
     // Validate news id
-    if($id == $request->feed_id){
+    if($id == $request->account){
 
         // find the news
         $event = News::find($request->id); // TODO: Need Validation Here
@@ -197,7 +197,7 @@ $app->put("/news/:id", function ($id) use ($app) {
         $event->title = $request->title;
         $event->content = $request->content;
         $event->post_date = $request->post_date->date;
-        $event->feed_id = $request->feed_id;
+        $event->account = $request->account;
         $event->save();
         // package the data
         $response['data'] = $event->values_for(array('id','title','content','post_date'));
