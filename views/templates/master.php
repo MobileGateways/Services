@@ -22,7 +22,15 @@
 
   <script src="/assets/js/vendor/bootstrap.min.js"></script>
   <script src="/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
- <script src="/assets/js/vendor/moment.min.js"></script>
+  <script src="/assets/js/vendor/moment.min.js"></script>
+  <script>
+      // enable tooltips
+      $(".tip").tooltip();
+      var localTime = moment();
+      var timeZone = "PDT";
+      var curMonth = localTime.format('M');
+      var curYear = localTime.format('YYYY');
+  </script>
 
 </head>
 <body>
@@ -103,13 +111,6 @@
 <footer align="center">
     <p>Copyright &copy; 2013 <strong>The Austin Conner Group</strong></p>
 </footer>
-
-
-
-<script>
-    // enable tooltips
-    $(".tip").tooltip();
-</script>
 
 
 </body>

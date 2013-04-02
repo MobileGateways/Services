@@ -96,7 +96,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $nextDate->add(new DateInterval('P1M'));
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
+    $calendarData = Events::find('all', array('order'=>'start_time asc', 'conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
@@ -114,7 +114,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
 $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('account = ? AND MONTH(start_time) = ? AND YEAR(start_time) = ?', $id, $month, $year)));
+    $calendarData = Events::find('all', array('order'=>'start_time asc', 'conditions' => array('account = ? AND MONTH(start_time) = ? AND YEAR(start_time) = ?', $id, $month, $year)));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);
@@ -133,7 +133,7 @@ $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $respons
 $app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use ($app, $response) {
 
     // query events
-    $calendarData = Events::find('all', array('conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
+    $calendarData = Events::find('all', array('order'=>'start_time asc', 'conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
     // package the data
     $response['data'] = arrayMapEvent($calendarData);
     $response['count'] = count($response['data']);

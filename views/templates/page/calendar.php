@@ -12,7 +12,7 @@
 				<table class="table">
 				<thead>
 				  <tr>
-					<th colspan="5"><h3>Calendar of Events</h3></th>
+					<th colspan="5"><h3>Calendar of Events {{= curMonth	}} - {{= curYear }}</h3></th>
 				  </tr>
 				  <tr>
 					<th>Title</th>
@@ -123,9 +123,7 @@
 <script type="text/javascript">
 	// Set globals
 	var calId = "<?php echo $account['calendar_id'] ?>";
-	var timeZone = "PDT";
-	var curMonth = 3;
-	var curYear = 2013;
+
 </script>
 
 <script type="text/javascript" src="/views/templates/page/scripts/calendar.js"></script>

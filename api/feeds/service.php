@@ -84,7 +84,7 @@ $app->get('/', function () use($app, $response)  {
 
 
 /**
- * Fetch News - returns recent news (past 30 days max??)
+ * Fetch News - returns recent news (last 10 max??)
  *
  * get: /feeds/{id}
  *
@@ -95,7 +95,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $today = new DateTime('GMT');
 
     // query news
-    $newsData = News::find('all', array('conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
+    $newsData = News::find('all', array('limit'=>'10', 'order'=>'post_date asc', 'conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);
@@ -112,7 +112,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
  */
 $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
     // query news
-    $newsData = News::find('all', array('conditions' => array('account = ? AND MONTH(post_date) = ? AND YEAR(post_date) = ?', $id, $month, $year)));
+    $newsData = News::find('all', array('order'=>'post_date asc', 'conditions' => array('account = ? AND MONTH(post_date) = ? AND YEAR(post_date) = ?', $id, $month, $year)));
     // package the data
     $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);

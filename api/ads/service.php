@@ -95,7 +95,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $today = new DateTime('GMT');
 
     // query copy
-    $copyData = Ads::find('all', array('conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
+    $copyData = Ads::find('all', array('order'=>'post_date asc', 'conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapPost($copyData);
     $response['count'] = count($response['data']);
@@ -113,7 +113,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
 $app->get("/:id/:month", function ($id, $month) use ($app, $response) {
 
     // query ads
-    $copyData = Ads::find('all', array('conditions' => array('account = ? AND MONTH(post_date) = ?', $id, $month)));
+    $copyData = Ads::find('all', array('order'=>'post_date asc', 'conditions' => array('account = ? AND MONTH(post_date) = ?', $id, $month)));
     // package the data
     $response['data'] = arrayMapPost($copyData);
     $response['count'] = count($response['data']);

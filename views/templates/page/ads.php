@@ -11,12 +11,13 @@
 		<table class="table">
 		<thead>
 		  <tr>
-			<th colspan="4"><h3>News Feeds</h3></th>
+			<th colspan="5"><h3>Ads Feeds {{= curMonth	}} - {{= curYear }}</h3></th>
 		  </tr>
 		  <tr>
 			<th>Title</th>
 			<th>Content</th>
 			<th>Posted</th>
+			<th>Expires</th>
 			<th><span class="pull-right"><a class="btn btn-small btn-primary" id="1" href="#post/add">New Ad</a></span></th>
 		  </tr>
 		</thead>
@@ -25,7 +26,8 @@
 		  <tr>
 			<td><a class="feed" id="{{= ad.get('id') }}" href="#"><i class="icon-info-sign icon-white"></i>&nbsp;{{= ad.get('title') }}</a></td>
 			<td>{{= ad.get('content') }}</td>
-			<td>{{= moment(ad.get('post_date').date).format('LL') }}</td>
+			<td>{{= moment(ad.get('post_date').date).format('MMM Do') }}</td>
+			<td>{{= moment(ad.get('expire_date').date).format('MMM Do') }}</td>
 			<td><span class="pull-right"><a class="" href="#ad/edit/{{= ad.get('id') }}">Edit <i class="icon-edit icon-white"></i></a></span></td>
 		  </tr>
 
@@ -96,11 +98,10 @@
 
 
 <script type="text/javascript">
+
 	// Set globals
 	var chId = "<?php echo $account['ads_id'] ?>";
-	var timeZone = "PDT";
-	var curMonth = 3;
-	var curYear = 2013;
+
 </script>
 
 <script type="text/javascript" src="/views/templates/page/scripts/ads.js"></script>
