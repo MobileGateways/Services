@@ -169,7 +169,7 @@ $app->get("/event/:id", function ($id) use ($app, $response) {
     // query events
     $calendarData = Events::find($id);
     // package the data
-    $response['data'] = $calendarData->values_for(array('id','title','description','start_time','end_time'));
+    $response['data'] = $calendarData->values_for(array('id','title','description','start_time','end_time','place'));
     $response['count'] = 1;
     // send the data
     echo json_encode($response);
@@ -198,7 +198,7 @@ $app->post("/event/:id", function ($id) use ($app, $response) {
         $event->account = $request->account;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));
+        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time','place'));
         $response['message'] = "event saved";
     }
     else{
@@ -235,7 +235,7 @@ $app->put("/event/:id", function ($id) use ($app) {
         $event->account = $request->account;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time'));
+        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time','place'));
         $response['message'] = "event saved";
     }
     else{
@@ -281,6 +281,6 @@ $app->run();
  */
  function arrayMapEvent($events){
 
-    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'description\',\'start_time\',\'end_time\'));'),$events);
+    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'description\',\'start_time\',\'end_time\',\'place\'));'),$events);
 
  }
