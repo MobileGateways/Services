@@ -107,7 +107,7 @@ $app->get('/calendar', $authenticate($app), function () use ($app){
     require $_SERVER['DOCUMENT_ROOT'].'views/CalendarView.php';
     $app->view(new CalendarView());
     // Page Meta
-    $meta = array();
+    $meta = array('preview'=>'http://mobile-forge/hoa-coa/#events');
     $data = array('meta'=>$meta);
     $app->render('page/calendar.php', $data);
 
@@ -121,7 +121,7 @@ $app->get('/ads', $authenticate($app), function () use ($app){
     require $_SERVER['DOCUMENT_ROOT'].'views/AdsView.php';
     $app->view(new AdsView());
     // Page Meta
-    $meta = array();
+    $meta = array('preview'=>'http://mobile-forge/hoa-coa/#ads');
     $data = array('meta'=>$meta);
     $app->render('page/ads.php', $data);
 
@@ -135,7 +135,7 @@ $app->get('/posts', $authenticate($app), function () use ($app){
     require $_SERVER['DOCUMENT_ROOT'].'views/PostsView.php';
     $app->view(new PostsView());
     // Page Meta
-    $meta = array();
+    $meta = array('preview'=>'http://mobile-forge/hoa-coa/');
     $data = array('meta'=>$meta);
     $app->render('page/posts.php', $data);
 

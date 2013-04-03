@@ -12,7 +12,7 @@
 				<table class="table">
 				<thead>
 				  <tr>
-					<th colspan="5"><h3>Calendar of Events {{= curMonth	}} - {{= curYear }}</h3></th>
+					<th colspan="5"><h3>Calendar of Events for {{= navTime.format('MMMM YYYY') }}</h3></th>
 				  </tr>
 				  <tr>
 					<th>Title</th>
@@ -44,9 +44,15 @@
 		<fieldset class="span12">
 			<legend>Calendar Event</legend>
 			<div class="control-group">
-				<label class="control-label">Event Title</label>
+				<label class="control-label">Title</label>
 				<div class="controls">
 					<input type="text" value="{{= title }}"class="span12" id="eventTitle" name="eventTitle" placeholder="Enter a title for your event" >
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Location</label>
+				<div class="controls">
+					<input type="text" value="{{= place }}"class="span12" id="eventPlace" name="eventPlace" placeholder="Enter where the event is held" >
 				</div>
 			</div>
 			<div class="control-group">
@@ -103,15 +109,16 @@
 			<button type="button" class="close" data-dismiss="modal">✕</button>
 			<h3>Event Detail</h3>
 		</div>
-		<div class="modal-body" style="text-align:center;">
+		<div class="modal-body" style="text-align:left;">
 			<div class="row-fluid">
-				<div class="span10 offset1">
-					<ul>
-						<li>{{= title }}</li>
-						<li>{{= description }}</li>
-						<li>{{= moment(start_time.date).format('LL') }}</li>
-						<li>{{= moment(start_time.date).format('LT') }}</li>
-						<li>{{= moment(end_time.date).format('LT') }}</li>
+				<div class="span10">
+					<ul class="details">
+						<li><strong>Title:</strong> {{= title }}</li>
+						<li><strong>Location:</strong> {{= place }}</li>
+						<li><strong>Description:</strong> {{= description }}</li>
+						<li><strong>Date:</strong> {{= moment(start_time.date).format('LL') }}</li>
+						<li><strong>Start Time:</strong> {{= moment(start_time.date).format('LT') }}</li>
+						<li><strong>End Time:</strong> {{= moment(end_time.date).format('LT') }}</li>
 					</ul>
 					<span class="pull-right">&nbsp;<a class="" href="#">Delete <i class="icon-minus-sign icon-white"></i></a>&nbsp;<a id="{{= id }}" href="#event/edit/{{= id }}">Edit <i class="icon-edit icon-white"></i></a></span>
 				</div>

@@ -95,7 +95,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $today = new DateTime('GMT');
 
     // query news
-    $newsData = News::find('all', array('limit'=>'10', 'order'=>'post_date asc', 'conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
+    $newsData = News::find('all', array('limit'=>'10', 'order'=>'post_date desc', 'conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapPost($newsData);
     $response['count'] = count($response['data']);

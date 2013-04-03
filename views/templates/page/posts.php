@@ -79,13 +79,13 @@
 			<button type="button" class="close" data-dismiss="modal">✕</button>
 			<h3>News Post Detail</h3>
 		</div>
-		<div class="modal-body" style="text-align:center;">
+		<div class="modal-body" style="text-align:left;">
 			<div class="row-fluid">
-				<div class="span10 offset1">
-					<ul>
-						<li>{{= title }}</li>
-						<li>{{= content }}</li>
-						<li>{{= moment(post_date.date).format('LL') }}</li>
+				<div class="span10">
+					<ul class="details">
+						<li><strong>Title:</strong> {{= title }}</li>
+						<li><strong>Content:</strong> {{= content }}</li>
+						<li><strong>Post Date:</strong> {{= moment(post_date.date).format('LL') }}</li>
 					</ul>
 					<span class="pull-right">&nbsp;<a class="" href="#">Delete <i class="icon-minus-sign icon-white"></i></a>&nbsp;<a id="{{= id }}" href="#event/edit/{{= id }}">Edit <i class="icon-edit icon-white"></i></a></span>
 				</div>

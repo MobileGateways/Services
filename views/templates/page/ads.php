@@ -18,7 +18,7 @@
 			<th>Content</th>
 			<th>Posted</th>
 			<th>Expires</th>
-			<th><span class="pull-right"><a class="btn btn-small btn-primary" id="1" href="#post/add">New Ad</a></span></th>
+			<th><span class="pull-right"><a class="btn btn-small btn-primary" id="1" href="#ad/add">New Ad</a></span></th>
 		  </tr>
 		</thead>
 		<tbody>
@@ -40,7 +40,7 @@
 <script id="postForm" type="text/template">
 	<div class="form-horizontal" id="postNews">
 	<fieldset class="span12">
-		<legend>News Post</legend>
+		<legend>Ad Post</legend>
 		<div class="control-group">
 			<label class="control-label">Title</label>
 			<div class="controls">
@@ -64,6 +64,15 @@
 						</div>
 					</div>
 				</div>
+				<div class="control-group ">
+					<label class="control-label">Expire Date</label>
+					<div class="controls">
+						<div id="expireDate" class="input-append date form_date" data-date="" data-date-format="dd M yyyy">
+						<input type="text" value="{{= moment(expire_date.date).format('LL') }}">
+						<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="form-actions">
@@ -79,15 +88,16 @@
 	<div class="modal" id="postModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">✕</button>
-			<h3>News Post Detail</h3>
+			<h3>Ad Detail</h3>
 		</div>
-		<div class="modal-body" style="text-align:center;">
+		<div class="modal-body" style="text-align:left;">
 			<div class="row-fluid">
-				<div class="span10 offset1">
-					<ul>
-						<li>{{= title }}</li>
-						<li>{{= content }}</li>
-						<li>{{= moment(post_date.date).format('LL') }}</li>
+				<div class="span10">
+					<ul class="details">
+						<li><strong>Title:</strong> {{= title }}</li>
+						<li><strong>Content:</strong> {{= content }}</li>
+						<li><strong>Post Date:</strong> {{= moment(post_date.date).format('LL') }}</li>
+						<li><strong>Expire Date:</strong> {{= moment(expire_date.date).format('LL') }}</li>
 					</ul>
 					<span class="pull-right">&nbsp;<a class="" href="#">Delete <i class="icon-minus-sign icon-white"></i></a>&nbsp;<a id="{{= id }}" href="#event/edit/{{= id }}">Edit <i class="icon-edit icon-white"></i></a></span>
 				</div>

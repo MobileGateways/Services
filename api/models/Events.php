@@ -31,6 +31,6 @@
  */
 class Events extends ActiveRecord\Model {
   static $table_name = 'events';
-  static $belongs_to = array(array('calendar', 'class_name'=>'Calendar'));
+
 
 }

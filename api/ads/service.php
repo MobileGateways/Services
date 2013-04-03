@@ -49,7 +49,7 @@ $app = new \Slim\Slim();
 $app->hook('slim.before.dispatch', function () use ($app) {
 
     // Provide a better validation here...
-    if ($app->request()->params('apiKey') !== "B6EE6188709B") {
+    if ($app->request()->params('apiKey') !== "7406f3491660b7b35b85f5381e511712") {
         #$app->halt(403, "Invalid or Missing Key");
     }
 });
@@ -84,7 +84,7 @@ $app->get('/', function () use($app, $response)  {
 
 
 /**
- * Fetch Ads - returns recent ads (past 30 days max??)
+ * Fetch Ads - returns recent ads (next 30 days max??)
  *
  * get: /ads/{id}
  *
@@ -95,7 +95,7 @@ $app->get("/:id", function ($id) use ($app, $response) {
     $today = new DateTime('GMT');
 
     // query copy
-    $copyData = Ads::find('all', array('order'=>'post_date asc', 'conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
+    $copyData = Ads::find('all', array('order'=>'expire_date asc', 'conditions' => array('account = ? AND ? BETWEEN post_date AND expire_date', $id, $today->format("Y-m-d"))));
     // package the data
     $response['data'] = arrayMapPost($copyData);
     $response['count'] = count($response['data']);

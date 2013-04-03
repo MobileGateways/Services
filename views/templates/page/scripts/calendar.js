@@ -34,6 +34,7 @@ window.Event = Backbone.Model.extend({
     defaults:{
     "id":null,
     "title":"",
+    "place":"",
     "description":"",
     "start_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
     "end_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
@@ -115,7 +116,7 @@ window.CalendarView = Backbone.View.extend({
         curMonth = 12;
         --curYear;
     }
-
+    navTime.subtract('M',1)
     this.collection.fetchMonth({id: calId, mo: curMonth, yr: curYear});
   },
 
@@ -124,6 +125,7 @@ window.CalendarView = Backbone.View.extend({
         curMonth = 1;
         ++curYear;
     }
+    navTime.add('M',1)
     this.collection.fetchMonth({id: calId, mo: curMonth, yr: curYear});
   },
 
@@ -168,6 +170,7 @@ window.EventView = Backbone.View.extend({
   saveEvent:function () {
     this.model.set({
         title: $('#eventTitle').val(),
+        place: $('#eventPlace').val(),
         description: $('#eventDescription').val(),
         start_time: {date: $('#startDate input').val()+' '+$('#startTime input').val(),timezone_type:2,timezone:timeZone},// $('#eventTitle').val(),
         end_time: {date: moment($('#startDate input').val()+' '+$('#endTime input').val()),timezone_type:2,timezone:timeZone}, //$('#eventTitle').val()

@@ -2,7 +2,8 @@
 <html class="no-js">
 <head>
   <?php
-
+    $pageMeta = $this->getData('meta');
+    //echo var_dump($pageMeta);
   ?>
   <meta charset="utf-8">
   <title>Mobile Admin</title>
@@ -27,6 +28,7 @@
       // enable tooltips
       $(".tip").tooltip();
       var localTime = moment();
+      var navTime = localTime;
       var timeZone = "PDT";
       var curMonth = localTime.format('M');
       var curYear = localTime.format('YYYY');
@@ -96,8 +98,10 @@
         <?php $this->partial($childView, $this->getData())?>
       </div>
 
-      <div class="span3">
-        <?php require_once $_SERVER['DOCUMENT_ROOT'].'/views/templates/partials/section-menu.php' ?>
+      <div class="span3 preview">
+        <!-- Mobile Preview -->
+        <iframe src="<?php echo $pageMeta['preview'] ?>" scrolling="no" class="preview"></iframe>
+
       </div>
     </div>
 
