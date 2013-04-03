@@ -111,7 +111,7 @@ window.FeedView = Backbone.View.extend({
         curMonth = 12;
         --curYear;
     }
-
+	navTime.subtract('M',1)
     this.collection.fetchMonth({id: feedId, mo: curMonth, yr: curYear});
   },
 
@@ -120,6 +120,7 @@ window.FeedView = Backbone.View.extend({
         curMonth = 1;
         ++curYear;
     }
+	navTime.add('M',1)
     this.collection.fetchMonth({id: feedId, mo: curMonth, yr: curYear});
   },
 
@@ -172,9 +173,19 @@ window.NewsView = Backbone.View.extend({
             }
         });
     } else {
-        this.model.save();
-         router.navigate('/', {trigger: true});
+        this.model.save({}, {
+            success:function () {
+                router.navigate('/', {trigger: true});
+            }
+        });
     }
+    this.close();
+    // force refreash
+    preview = $('#preview').attr('src');
+    $('#preview').attr('src', '');
+    setTimeout(function () {
+        $('#preview').attr('src', preview);
+    }, 300);
 
     return false;
   },

@@ -11,7 +11,7 @@
 		<table class="table">
 		<thead>
 		  <tr>
-			<th colspan="5"><h3>Ads Feeds {{= curMonth	}} - {{= curYear }}</h3></th>
+			<th colspan="5"><h3>Ads Feeds for {{= navTime.format('MMMM YYYY') }}</h3></th>
 		  </tr>
 		  <tr>
 			<th>Title</th>

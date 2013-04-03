@@ -163,6 +163,7 @@ $app->post("/copy/:id", function ($id) use ($app, $response) {
         $event->title = $request->title;
         $event->content = $request->content;
         $event->post_date = $request->post_date->date;
+        $event->expire_date = $request->expire_date->date;
         $event->account = $request->account;
         $event->save();
         // package the data
@@ -198,6 +199,7 @@ $app->put("/copy/:id", function ($id) use ($app) {
         $event->title = $request->title;
         $event->content = $request->content;
         $event->post_date = $request->post_date->date;
+        $event->expire_date = $request->expire_date->date;
         $event->account = $request->account;
         $event->save();
         // package the data

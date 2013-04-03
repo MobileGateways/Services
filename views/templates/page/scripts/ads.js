@@ -112,7 +112,7 @@ window.AdsView = Backbone.View.extend({
         curMonth = 12;
         --curYear;
     }
-
+	navTime.subtract('M',1)
     this.collection.fetchMonth({id: chId, mo: curMonth, yr: curYear});
   },
 
@@ -121,6 +121,7 @@ window.AdsView = Backbone.View.extend({
         curMonth = 1;
         ++curYear;
     }
+	navTime.subtract('M',1)
     this.collection.fetchMonth({id: chId, mo: curMonth, yr: curYear});
   },
 
@@ -174,9 +175,19 @@ window.AdView = Backbone.View.extend({
             }
         });
     } else {
-        this.model.save();
-         router.navigate('/', {trigger: true});
+        this.model.save({}, {
+            success:function () {
+                router.navigate('/', {trigger: true});
+            }
+        });
     }
+    this.close();
+    // force refreash
+    preview = $('#preview').attr('src');
+    $('#preview').attr('src', '');
+    setTimeout(function () {
+        $('#preview').attr('src', preview);
+    }, 300);
 
     return false;
   },
@@ -244,7 +255,7 @@ window.Routes = Backbone.Router.extend({
      */
     edit: function(id){
         var post = this.adsList.get(id);
-        new window.NewsView({model:post}).render();
+        new window.AdView({model:post}).render();
     },
     /*
      * Remove Events

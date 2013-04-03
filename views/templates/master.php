@@ -97,12 +97,14 @@
       <div class="span9">
         <?php $this->partial($childView, $this->getData())?>
       </div>
-
+      <?php if(isset($pageMeta['preview'])){ ?>
       <div class="span3 preview">
         <!-- Mobile Preview -->
-        <iframe src="<?php echo $pageMeta['preview'] ?>" scrolling="no" class="preview"></iframe>
-
+        <iframe id="preview" src="<?php echo $pageMeta['preview'] ?>" scrolling="no" class="preview"></iframe>
       </div>
+      <?php } ?>
+      <div class="span3 well"></div>
+
     </div>
 
   </div>

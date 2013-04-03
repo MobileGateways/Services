@@ -104,9 +104,9 @@ window.CalendarView = Backbone.View.extend({
 
   render: function(){
     var params = { events: this.collection.models };
-    console.log('CalendarView Rendered');
     var template = _.template($("#events").html(), params);
     $(this.el).html(template);
+
     return this;
   },
 
@@ -185,9 +185,19 @@ window.EventView = Backbone.View.extend({
             }
         });
     } else {
-        this.model.save();
-         router.navigate('/', {trigger: true});
+        this.model.save({}, {
+            success:function () {
+                router.navigate('/', {trigger: true});
+            }
+        });
     }
+    this.close();
+    // force refreash
+    preview = $('#preview').attr('src');
+    $('#preview').attr('src', '');
+    setTimeout(function () {
+        $('#preview').attr('src', preview);
+    }, 300);
 
     return false;
   },
