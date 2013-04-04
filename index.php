@@ -58,7 +58,7 @@ $app->get('/', $authenticate($app), function () use($app) {
     $app->view(new DashboardView());
 
     // Page Meta
-    $meta = array();
+    $meta = array('preview'=>'http://mobile-forge/ogc/');
     $data = array('meta'=>$meta);
     $app->render('page/home.php', $data);
 
@@ -135,7 +135,7 @@ $app->get('/posts', $authenticate($app), function () use ($app){
     require $_SERVER['DOCUMENT_ROOT'].'views/PostsView.php';
     $app->view(new PostsView());
     // Page Meta
-    $meta = array('preview'=>'http://mobile-forge/ogc/');
+    $meta = array('preview'=>'http://mobile-forge/ogc/#news');
     $data = array('meta'=>$meta);
     $app->render('page/posts.php', $data);
 
@@ -151,7 +151,7 @@ $app->get('/gallery', $authenticate($app), function () use ($app){
     $app->view(new GalleryView());
 
     // Page Meta
-    $meta = array();
+    $meta = array('preview'=>'http://mobile-forge/ogc/');
     $data = array('meta'=>$meta);
     $app->render('page/gallery.php', $data);
 

@@ -29,24 +29,23 @@
  *
  *
  */
-window.Event = Backbone.Model.extend({
-    url: '/api/calendar/event/'+calId,
+window.Photo = Backbone.Model.extend({
+    url: '/api/gallery/photo/'+galId,
     defaults:{
     "id":null,
     "title":"",
-    "place":"",
-    "description":"",
-    "start_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "end_time":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
-    "account":calId
+    "resource":"",
+    "type":"",
+    "post_date":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
+    "account":galId
     }
 });
 
-window.Calendar = Backbone.Collection.extend({
-    model:Event,
-    id:0,   // calendar id
-    mo:0,   // calendar month
-    yr:0,   // calendar year
+window.Gallery = Backbone.Collection.extend({
+    model:Photo,
+    id:0,   // gallery id
+    mo:0,   // gallery month
+    yr:0,   // gallery year
     startDate: '',
     endDate: '',
     initialize: function(options) {
@@ -64,14 +63,14 @@ window.Calendar = Backbone.Collection.extend({
     },
     // override fetch url for addtional uri elements
     url:function() {
-        // /calendar/{id}
+        // /gallery/{id}
         var uri = ''+ this.id;
-        // /calendar/{id}/{month}
+        // /gallery/{id}/{month}
         uri = uri + (this.mo > 0 ? '/'+this.mo:'')+(this.yr > 0 ? '-'+this.yr:'2013');
         // build new uri
 
         console.log(uri);
-        return "/api/calendar/"+uri;
+        return "/api/gallery/"+uri;
     },
 
     parse:function(response){
@@ -86,7 +85,7 @@ window.Calendar = Backbone.Collection.extend({
  *
  *
  */
-window.CalendarView = Backbone.View.extend({
+window.GalleryView = Backbone.View.extend({
   el: '#eventContext',
   collection: null,
   initialize: function(options){
@@ -103,8 +102,8 @@ window.CalendarView = Backbone.View.extend({
   },
 
   render: function(){
-    var params = { events: this.collection.models };
-    var template = _.template($("#events").html(), params);
+    var params = { gallery: this.collection.models };
+    var template = _.template($("#gallery").html(), params);
     $(this.el).html(template);
 
     return this;
@@ -117,7 +116,7 @@ window.CalendarView = Backbone.View.extend({
         --curYear;
     }
     navTime.subtract('M',1)
-    this.collection.fetchMonth({id: calId, mo: curMonth, yr: curYear});
+    this.collection.fetchMonth({id: galId, mo: curMonth, yr: curYear});
   },
 
   nextMo: function(){
@@ -126,11 +125,11 @@ window.CalendarView = Backbone.View.extend({
         ++curYear;
     }
     navTime.add('M',1)
-    this.collection.fetchMonth({id: calId, mo: curMonth, yr: curYear});
+    this.collection.fetchMonth({id: galId, mo: curMonth, yr: curYear});
   },
 
   /**
-   * Display Event Details in a Modal Dialog
+   * Display Photo Details in a Modal Dialog
    *
    */
   detail: function(e){
@@ -147,7 +146,7 @@ window.CalendarView = Backbone.View.extend({
 
 });
 
-window.EventView = Backbone.View.extend({
+window.PhotoView = Backbone.View.extend({
   el: '#eventContext',
   model: null,
   initialize: function(options){
@@ -156,9 +155,9 @@ window.EventView = Backbone.View.extend({
 
   },
 
-  events:{
+  gallery:{
     "change input":"change",
-    "click #submit":"saveEvent",
+    "click #submit":"savePhoto",
     "click #close":"cancel"
   },
 
@@ -167,14 +166,14 @@ window.EventView = Backbone.View.extend({
       console.log('changing ' + target.id + ' from: ' + target.defaultValue + ' to: ' + target.value);
 
   },
-  saveEvent:function () {
+  savePhoto:function () {
     this.model.set({
         title: $('#eventTitle').val(),
         place: $('#eventPlace').val(),
         description: $('#eventDescription').val(),
         start_time: {date: $('#startDate input').val()+' '+$('#startTime input').val(),timezone_type:2,timezone:timeZone},// $('#eventTitle').val(),
         end_time: {date: moment($('#startDate input').val()+' '+$('#endTime input').val()),timezone_type:2,timezone:timeZone}, //$('#eventTitle').val()
-        account: calId
+        account: galId
 
     });
     if (this.model.isNew()) {
@@ -202,7 +201,7 @@ window.EventView = Backbone.View.extend({
     return false;
   },
   render: function(){
-    var template = _.template($("#eventForm").html(), this.model.toJSON());
+    var template = _.template($("#photoForm").html(), this.model.toJSON());
     $(this.el).html(template);
     // initilize date/time controls
     $('.form_date').datetimepicker({
@@ -215,18 +214,7 @@ window.EventView = Backbone.View.extend({
        minView: 2,
        forceParse: 0
     });
-    $('.form_time').datetimepicker({
-       //initalDate:  '',
-       weekStart: 1,
-       todayBtn:  1,
-       autoclose: 1,
-       todayHighlight: 0,
-       startView: 1,
-       minView: 0,
-       maxView: 1,
-       forceParse: 0,
-       showMeridian: 1
-    });
+
     return this;
   },
 
@@ -254,39 +242,38 @@ window.Routes = Backbone.Router.extend({
 
 	routes: {
         "" : "index",                       // initial view
-        "event/add" : "add",
-        "event/remove/:id" : "remove",
-	"event/edit/:id" : "edit"
+        "photo/add" : "add",
+        "photo/remove/:id" : "remove",
+        "photo/edit/:id" : "edit"
 	},
 
     /*
-     * Display Current Month's Events
+     * Display Current Month's Photos
      */
     index: function(){
 
-        this.eventList = new window.Calendar({id: calId, mo: curMonth, yr: curYear});
-        new window.CalendarView({collection: this.eventList});
+        this.eventList = new window.Gallery({id: galId, mo: curMonth, yr: curYear});
+        new window.GalleryView({collection: this.eventList});
 
     },
 
-
     /*
-     * Add Event
+     * Add Photo
      */
     add: function(){
 
-         new window.EventView({model: new window.Event(), month: curMonth, yr: curYear}).render();
+         new window.PhotoView({model: new window.Photo(), month: curMonth, yr: curYear}).render();
 
     },
     /*
-     * Edit Events
+     * Edit Photos
      */
     edit: function(id){
         var event = this.eventList.get(id);
-        new window.EventView({model:event}).render();
+        new window.PhotoView({model:event}).render();
     },
     /*
-     * Remove Events
+     * Remove Photos
      */
     remove: function(id){
 

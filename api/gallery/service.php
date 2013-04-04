@@ -24,6 +24,7 @@
  * @since		Version 1.0
  * @filesource
  */
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
@@ -71,34 +72,32 @@ $response = array('status'=>'ok', 'message'=>'', 'count'=>0, 'data'=>array());
 /**
  * Status Page
  *
- * /calendar/
+ * get: /gallery/
  *
  */
 $app->get('/', function () use($app, $response)  {
 
-    $response['message'] = 'Mobile Gateways Events Services v1.0';
+    $response['message'] = 'Mobile Gateways Gallery Services v1.0';
     echo json_encode($response);
 
 });
 
 
 /**
- * Fetch Calendar - returns calendar for next 90 days
+ * Fetch Gallery - returns recent photo (last 10 max??)
  *
- * /calendar/{id}
+ * get: /gallery/{id}
  *
  */
 $app->get("/:id", function ($id) use ($app, $response) {
 
     // get date
-    $nextDate = new DateTime('GMT');
     $today = new DateTime('GMT');
-    $nextDate->add(new DateInterval('P3M'));
 
-    // query events
-    $calendarData = Events::find('all', array('order'=>'start_time asc', 'conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $today->format("Y-m-d"),$nextDate->format("Y-m-d"))));
+    // query photo
+    $photoData = Media::find('all', array('limit'=>'10', 'order'=>'post_date desc', 'conditions' => array('account = ? AND post_date <= ?', $id, $today->format("Y-m-d"))));
     // package the data
-    $response['data'] = arrayMapEvent($calendarData);
+    $response['data'] = arrayMapMedia($photoData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
@@ -106,70 +105,39 @@ $app->get("/:id", function ($id) use ($app, $response) {
 })->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
- * Fetch Calendar - returns calendar for month
+ * Fetch Gallery - returns media for month
  *
- * /calendar/{id}/{month}-{year}
+ * get: /gallery/{id}/{month}-{year}
  *
  */
 $app->get("/:id/:month-:year", function ($id, $month, $year) use ($app, $response) {
-
-    // query events
-    $calendarData = Events::find('all', array('order'=>'start_time asc', 'conditions' => array('account = ? AND MONTH(start_time) = ? AND YEAR(start_time) = ?', $id, $month, $year)));
+    // query photo
+    $photoData = Media::find('all', array('order'=>'post_date asc', 'conditions' => array('account = ? AND MONTH(post_date) = ? AND YEAR(post_date) = ?', $id, $month, $year)));
     // package the data
-    $response['data'] = arrayMapEvent($calendarData);
+    $response['data'] = arrayMapMedia($photoData);
     $response['count'] = count($response['data']);
     // send the data
     echo json_encode($response);
 
-
-})->conditions(array('id' => '[0-9a-z]{32}'));
-
-/**
- * Fetch Calendar - returns calendar for date range
- *
- * /calendar/{id}/{startDate}/{endDate}
- *
- */
-$app->get("/:id/:startDate/:endDate", function ($id, $startDate, $endDate) use ($app, $response) {
-
-    // query events
-    $calendarData = Events::find('all', array('order'=>'start_time asc', 'conditions' => array('account = ? AND start_time BETWEEN ? AND ?', $id, $startDate, $endDate)));
-    // package the data
-    $response['data'] = arrayMapEvent($calendarData);
-    $response['count'] = count($response['data']);
-    // send the data
-    echo json_encode($response);
 })->conditions(array('id' => '[0-9a-z]{32}'));
 
 
-/**
- * Add New Calendar
- *
- *
- */
-//$app->post("/add", function () use ($app) {
-//
-//    $calendarData = new Calendar();
-//
-//
-//
-//});
 
-/* CALENDAR EVENTS */
+/* NEWS FEEDS */
 
 
 /**
- * Get Calendar Event
+ * Get Gallery Event
  *
- * get: /calendar/event/{id}
+ * get: /gallery/photo/{id}
  *
  */
-$app->get("/event/:id", function ($id) use ($app, $response) {
+$app->get("/photo/:id", function ($id) use ($app, $response) {
 
-    // query events
-    $calendarData = Events::find($id);
+    // query photo
+    $photoData = Media::find($id);
     // package the data
-    $response['data'] = $calendarData->values_for(array('id','title','description','start_time','end_time','place'));
+    $response['data'] = $photoData->values_for(array('id','title','resource','post_date'));
     $response['count'] = 1;
     // send the data
     echo json_encode($response);
@@ -177,29 +145,28 @@ $app->get("/event/:id", function ($id) use ($app, $response) {
 });
 
 /**
- * Add Event to Calendar (id)
+ * Add Gallery to Feed (id)
  *
- *
+ * post: /gallery/photo/{id}
  *
  */
-$app->post("/event/:id", function ($id) use ($app, $response) {
+$app->post("/photo/:id", function ($id) use ($app, $response) {
 
     $request = json_decode($app->request()->getBody());
 
-    // Validate calendar id
+    // Validate feed id
     if($id == $request->account){
 
-        // create the event
-        $event = new Events();
+        // create the post
+        $event = new Gallery();
         $event->title = $request->title;
-        $event->description = $request->description;
-        $event->start_time = $request->start_time->date;
-        $event->end_time = $request->end_time->date;
+        $event->content = $request->content;
+        $event->post_date = $request->post_date->date;
         $event->account = $request->account;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time','place'));
-        $response['message'] = "event saved";
+        $response['data'] = $event->values_for(array('id','title','resource','post_date'));
+        $response['message'] = "post saved";
     }
     else{
         $response['status'] = "error";
@@ -212,31 +179,29 @@ $app->post("/event/:id", function ($id) use ($app, $response) {
 })->conditions(array('id' => '[0-9a-z]{32}'));
 
 /**
- * Update Event to Calendar (id)
+ * Update Gallery to Feeds (id)
  *
- *
+ * put: /gallery/photo/{id}
  *
  */
-$app->put("/event/:id", function ($id) use ($app) {
+$app->put("/photo/:id", function ($id) use ($app) {
 
     $request = json_decode($app->request()->getBody());
 
-    // Validate calendar id
+    // Validate photo id
     if($id == $request->account){
 
-        // find the event
-        $event = Events::find($request->id);
-        // Need Validation Here
+        // find the photo
+        $event = Media::find($request->id); // TODO: Need Validation Here
         // Update and Save Values
         $event->title = $request->title;
-        $event->description = $request->description;
-        $event->start_time = $request->start_time->date;
-        $event->end_time = $request->end_time->date;
+        $event->content = $request->content;
+        $event->post_date = $request->post_date->date;
         $event->account = $request->account;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','description','start_time','end_time','place'));
-        $response['message'] = "event saved";
+        $response['data'] = $event->values_for(array('id','title','resource','post_date'));
+        $response['message'] = "post saved";
     }
     else{
         $response['status'] = "error";
@@ -251,12 +216,12 @@ $app->put("/event/:id", function ($id) use ($app) {
 });
 
 /**
- * Delete Event to Calendar (id)
+ * Delete Gallery from Feeds (id)
  *
- *
+ * delete: /gallery/photo/{id}
  *
  */
-$app->delete("/event/:id", function ($id) use ($app) {
+$app->delete("/photo/:id", function ($id) use ($app) {
 
 
 });
@@ -272,15 +237,13 @@ $app->run();
 
 
 /**
- * Data conversion utilites for calendar events
- *
- *
+ * Data conversion utilites for photo events
  *
  *
  *
  */
- function arrayMapEvent($events){
+ function arrayMapMedia($events){
 
-    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'description\',\'start_time\',\'end_time\',\'place\'));'),$events);
+    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'resource\',\'post_date\'));'),$events);
 
  }

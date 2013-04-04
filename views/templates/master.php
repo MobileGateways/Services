@@ -46,12 +46,9 @@
                     <span class="icon-bar"></span>
                 </a>
                 <span class="brand">Mobile Admin</span>
-
                 <div class="nav-collapse collapse">
-
                     <ul class="nav">
                         <li class=""><a href="/"><i class="icon-home icon-black"></i> Dashboard</a></li>
-
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                                class="icon-edit icon-black"></i>
@@ -59,12 +56,11 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/calendar">Calendar</a></li>
                                 <li><a href="/posts">News Feeds</a></li>
+                                <li><a href="/gallery">Photo Gallery</a></li>
                                 <li><a href="/ads">Coupon Feeds</a></li>
                             </ul>
                         </li>
-
                     </ul>
-
                     <ul class="nav pull-right settings">
                         <li><a href="/account/settings" class="tip icon logout" data-original-title="Settings"
                                data-placement="bottom"><i class="icon-large icon-cog"></i></a></li>
@@ -72,15 +68,12 @@
                         <li><a href="/a/logout" class="tip icon logout" data-original-title="Logout" data-placement="bottom"><i
                            class="icon-large icon-off"></i></a></li>
                     </ul>
-
                     <ul class="nav pull-right settings">
                         <li class="divider-vertical"></li>
                     </ul>
-
                     <p class="navbar-text pull-right">
                         Welcome <strong><?php echo $this->user(); ?></strong>
                     </p>
-
                     <ul class="nav pull-right settings">
                         <li class="divider-vertical"></li>
                     </ul>
