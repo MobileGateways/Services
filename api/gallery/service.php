@@ -137,7 +137,7 @@ $app->get("/photo/:id", function ($id) use ($app, $response) {
     // query photo
     $photoData = Media::find($id);
     // package the data
-    $response['data'] = $photoData->values_for(array('id','title','resource','post_date'));
+    $response['data'] = $photoData->values_for(array('id','title','group','description','resource','post_date'));
     $response['count'] = 1;
     // send the data
     echo json_encode($response);
@@ -165,7 +165,7 @@ $app->post("/photo/:id", function ($id) use ($app, $response) {
         $event->account = $request->account;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','resource','post_date'));
+        $response['data'] = $event->values_for(array('id','title','group','description','resource','post_date'));
         $response['message'] = "post saved";
     }
     else{
@@ -200,7 +200,7 @@ $app->put("/photo/:id", function ($id) use ($app) {
         $event->account = $request->account;
         $event->save();
         // package the data
-        $response['data'] = $event->values_for(array('id','title','resource','post_date'));
+        $response['data'] = $event->values_for(array('id','title','group','description','resource','post_date'));
         $response['message'] = "post saved";
     }
     else{
@@ -244,6 +244,6 @@ $app->run();
  */
  function arrayMapMedia($events){
 
-    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'resource\',\'post_date\'));'),$events);
+    return array_map(create_function('$m','return $m->values_for(array(\'id\',\'title\',\'group\',\'description\',\'type\',\'resource\',\'post_date\'));'),$events);
 
  }

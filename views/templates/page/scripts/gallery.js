@@ -34,11 +34,13 @@ window.Photo = Backbone.Model.extend({
     defaults:{
     "id":null,
     "title":"",
-    "resource":"",
+    "resource":{picture:'', name:'', link:'', created_time:''},
     "type":"",
     "post_date":{"date":"2013-04-01 00:00:00","timezone_type":2,"timezone":"PDT"},
     "account":galId
     }
+
+
 });
 
 window.Gallery = Backbone.Collection.extend({
@@ -86,7 +88,7 @@ window.Gallery = Backbone.Collection.extend({
  *
  */
 window.GalleryView = Backbone.View.extend({
-  el: '#eventContext',
+  el: '#photoContext',
   collection: null,
   initialize: function(options){
     _.bind(this, 'render');
@@ -102,8 +104,9 @@ window.GalleryView = Backbone.View.extend({
   },
 
   render: function(){
-    var params = { gallery: this.collection.models };
-    var template = _.template($("#gallery").html(), params);
+	console.log(this.collection.models);
+    var params = { photos: this.collection.models };
+    var template = _.template($("#photos").html(), params);
     $(this.el).html(template);
 
     return this;
@@ -147,7 +150,7 @@ window.GalleryView = Backbone.View.extend({
 });
 
 window.PhotoView = Backbone.View.extend({
-  el: '#eventContext',
+  el: '#photoContext',
   model: null,
   initialize: function(options){
     _.bind(this, 'render');

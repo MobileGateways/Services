@@ -11,28 +11,22 @@
 
 			<div class="span12">
 			<div><span class="pull-left"><a id="prevMo"href="#">Prev</a></span><span class="pull-right"><a id="nextMo" href="#">Next</a></span></div>
-				<table class="table">
-				<thead>
-				  <tr>
-					<th colspan="5"><h3>Album for {{= navTime.format('MMMM YYYY') }}</h3></th>
-				  </tr>
-				  <tr>
-					<th>Title</th>
-					<th>Date</th>
-					<th><span class="pull-right"><a class="btn btn-small btn-primary" id="1" href="#photo/add">Add Photo</a></span></th>
-				  </tr>
-				</thead>
-				<tbody>
-				{{ _(photos).each(function(photo) { }}
-				  <tr>
-					<td><a class="photo" id="{{= photo.get('id') }}" href="#"><i class="icon-info-sign icon-white"></i>&nbsp;{{= photo.get('title') }}</a></td>
-					<td>{{= moment(photo.get('post').date).format('LL') }}</td>
-					<td><span class="pull-right"><a class="" href="#photo/edit/{{= photo.get('id') }}">Edit <i class="icon-edit icon-white"></i></a></span></td>
-				  </tr>
-
-				{{ }); }}
-				</tbody>
-				</table>
+				<h3>Photos for {{= navTime.format('MMMM YYYY') }}</h3>
+				<ul class="media-list">
+					{{ _(photos).each(function(photo) { }}
+					<li class="media">
+						<a style="width: 130px;" class="pull-left" id="{{= photo.get('id') }}" href="#">
+							<img class="media-object" src="{{= photo.get('resource').picture }}" />
+						</a>
+						<div class="media-body">
+							<h3>{{= photo.get('group') }}: {{= moment(photo.get('resource').created_time).format('LL') }}</h3>
+							<p><strong>Caption:</strong> {{= photo.get('resource').name }}
+							<a href="{{= photo.get('resource').link }}">Link</a>
+							</p>
+						</div>
+					</li>
+					{{ }); }}
+				</ul>
 			</div>
 
 	</script>
@@ -58,23 +52,25 @@
 
 <!-- Modals -->
 <div id="dialog"></div>
+
+<!--  -->
 <script id="photoDetail" type="text/template">
-	<div class="modal" id="photoModal">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">✕</button>
-			<h3>Photo Detail</h3>
-		</div>
-		<div class="modal-body" style="text-align:left;">
-			<div class="row-fluid">
-				<div class="span10">
-					<ul class="details">
-						<li><strong>Title:</strong> {{= title }}</li>
-					</ul>
-					<span class="pull-right">&nbsp;<a class="" href="#">Delete <i class="icon-minus-sign icon-white"></i></a>&nbsp;<a id="{{= id }}" href="#photo/edit/{{= id }}">Edit <i class="icon-edit icon-white"></i></a></span>
+		<div class="modal" id="photoModal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">✕</button>
+				<h3>Photo Detail</h3>
+			</div>
+			<div class="modal-body" style="text-align:left;">
+				<div class="row-fluid">
+					<div class="span10">
+						<ul class="details">
+							<li><strong>Title:</strong> {{= title }}</li>
+						</ul>
+						<span class="pull-right">&nbsp;<a class="" href="#">Delete <i class="icon-minus-sign icon-white"></i></a>&nbsp;<a id="{{= id }}" href="#photo/edit/{{= id }}">Edit <i class="icon-edit icon-white"></i></a></span>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </script>
 
 <script type="text/javascript">
@@ -84,3 +80,4 @@
 </script>
 
 <script type="text/javascript" src="/views/templates/page/scripts/gallery.js"></script>
+

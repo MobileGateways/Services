@@ -31,6 +31,13 @@
  */
 class Media extends ActiveRecord\Model {
   static $table_name = 'media';
-
+  // resource is a json string.
+  public function set_resource($value) {
+    $this->assign_attribute('resource',json_encode($value));
+  }
+  //resource is a json string.
+  public function get_resource() {
+    return json_decode($this->read_attribute('resource'));
+  }
 
 }

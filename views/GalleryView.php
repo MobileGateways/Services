@@ -28,5 +28,24 @@
 require $_SERVER['DOCUMENT_ROOT'].'/views/MasterView.php';
 class GalleryView extends MasterView
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    // http://graph.facebook.com/381492044069/albums?fields=photos.fields(source,link,name,created_time),name
+    public function fetchPhotos(){
+        $c = curl_init("http://graph.facebook.com/29047014069/albums?fields=photos.fields(source,link,name,created_time),name");
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+		//don't verify SSL (required for some servers)
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+        $photos = curl_exec($c);
+		curl_close($c);
+        return json_decode($photos)->photos;
+    }
+
+
+
+
 
 }
